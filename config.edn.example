@@ -1,0 +1,5 @@
+{:token "put your discord token here"
+ :playing "Say hello!"
+ :responses ["Hello there" "Good evening" "Good morning" "G'day" "Hi" "Howdy :cowboy:"]
+ :channel-id ""
+ :openweathermap-app-id "put your openweathermap app-id here"}
