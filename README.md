@@ -4,7 +4,11 @@ A Discord bot designed to... well, that part is up to you.
 
 ## Usage
 
-FIXME
+### Known command
+- !hn # top 5 news from HackerNews
+- !kitty # a random picture of cats!
+- !weather # now fix to 1 location, Pathum Thani, Thailand
+- !gem # listing the price of coffee beans from [gemforestcoffee.page365.net](gemforestcoffee.page365.net/)
 
 ## License
 

@@ -34,22 +34,26 @@
          (map make-story
               (take 5 (j/read-value (:body (client/get hn-top {:accept :json}))))))))
 
-(defn weather []
-  (let [weather-url "https://api.openweathermap.org/data/2.5/weather"
+(defn weather [evt]
+  (let [zip (or (-> evt
+                  (str/split #" ")
+                  (second))
+                "12120")
+        weather-url "https://api.openweathermap.org/data/2.5/weather"
         weather-data (-> (:body (client/get weather-url {:accept :json 
-                                                         :query-params {"q" "pathum thani"
+                                                         :query-params {"zip" (str zip ",th")
                                                                         "appid" (:openweathermap-app-id config)
                                                                         "units" "metric"
                                                                         "lang" "th"}}))
                          (j/read-value j/keyword-keys-object-mapper))
         desc (get-in weather-data [:weather 0 :description])
         temp (get-in weather-data [:main :temp])
-        province (get-in weather-data [:name])
+        city (get-in weather-data [:name])
         sunset (-> (+ (get-in weather-data [:timezone]) (get-in weather-data [:sys :sunset]))
                    (java.time.Instant/ofEpochSecond)
                    (.toString)
                    (clojure.instant/read-instant-date))]
-    (str province " " desc " อุณหภูมิ " temp " เซลเซียส, " (format "พระอาทิตย์ตกเวลา %tH:%tM" sunset sunset))))
+    (str city " " desc " อุณหภูมิ " temp " เซลเซียส, " (format "พระอาทิตย์ตกเวลา %tH:%tM" sunset sunset))))
 
 (defn gem-forest []
   (let [gem-forest-url "https://gemforestcoffee.page365.net/products.json"
@@ -117,8 +121,8 @@
             (discord-rest/create-message! (:rest @state) channel-id :content (gem-forest))
             (= (:content event-data) "!kitty")
             (discord-rest/create-message! (:rest @state) channel-id :content (random-kitty))
-            (= (:content event-data) "!weather")
-            (discord-rest/create-message! (:rest @state) channel-id :content (weather))))
+            (str/starts-with? (:content event-data) "!weather")
+            (discord-rest/create-message! (:rest @state) channel-id :content (weather (:content event-data)))))
         (recur)))
     (finally (stop-bot! @state))))
 
