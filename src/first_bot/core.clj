@@ -61,7 +61,10 @@
                      (j/read-value j/keyword-keys-object-mapper))
         items (:items products)
         name-price (map (juxt :name :price) (map #(select-keys % [:name :price]) items))]
-  (apply str (map (fn [[name price]] (str name " ราคา " price " บาท\n")) name-price))))
+  (println items)
+  (if (zero? (count items))
+    "ยังไม่มีรายการสินค้า ณ ตอนนี้"
+    (apply str (map (fn [[name price]] (str name " ราคา " price " บาท\n")) name-price)))))
 
 (defn random-kitty []
   (let [img-url (->
